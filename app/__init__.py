@@ -21,7 +21,7 @@ def character_table(e):
         file = request.files['file']
         
         df_uploaded = pd.read_csv(file)
-        class_start_date = file.filename
+        class_start_date = file.filename[:10]
         class_start_date =  datetime.strptime(class_start_date , '%Y-%m-%d').date()
         user = df_uploaded['get_user_ID'].unique()
         Table = {}     
