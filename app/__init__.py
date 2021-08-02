@@ -87,5 +87,5 @@ def character_table(e):
         df_Learners_scaled = scaler.fit_transform(df_Learners_scaled)    
         table = pd.DataFrame(df_Learners_scaled, index = df_Learners.index, 
                                             columns = df_Learners.columns)
-        return render_template('index.html', table = table.to_html(classes='data'), title=table.columns.values)
+        return table.to_html(header="true", index="true", table_id="table")
         
