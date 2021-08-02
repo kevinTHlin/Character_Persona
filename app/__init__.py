@@ -18,12 +18,12 @@ CORS(app)
 @app.route('/table', methods=['GET', 'POST'])
 def character_table(e):
     if request.method == 'POST':
-        class_start_date = request.form.get('date')
-        df_uploaded = pd.read_csv(request.files.get('file'))
-
+        file = request.files['file']
+        
+        df_uploaded = pd.read_csv(file)
+        class_start_date = file.filename
         class_start_date =  datetime.strptime(class_start_date , '%Y-%m-%d').date()
         user = df_uploaded['get_user_ID'].unique()
-        
         Table = {}     
         Learners = {}
         
