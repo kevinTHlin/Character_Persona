@@ -15,14 +15,14 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/table', methods=['GET', 'POST'])
-def character_table(e):
+@app.route('/table', methods=['POST'])
+def character_table():
     if request.method == 'POST':
-        file = request.files['file']
-        
-        df_uploaded = pd.read_csv(file)
-        class_start_date = file.filename[:10]
-        class_start_date =  datetime.strptime(class_start_date , '%Y-%m-%d').date()
+        id_date = request.get_json()
+        courseid = id_date['courseid']
+        startdate = id_date['startdate']
+        df_uploaded = pd.read_csv("{0}.csv".format(courseid))
+        class_start_date =  datetime.strptime(startdate , '%Y-%m-%d').date()
         user = df_uploaded['get_user_ID'].unique()
         Table = {}     
         Learners = {}
