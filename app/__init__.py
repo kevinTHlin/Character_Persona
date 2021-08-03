@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 
-from flask import Flask, request, render_template
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -87,5 +87,5 @@ def character_table(e):
         df_Learners_scaled = scaler.fit_transform(df_Learners_scaled)    
         table = pd.DataFrame(df_Learners_scaled, index = df_Learners.index, 
                                             columns = df_Learners.columns)
-        return table.to_html(header="true", index="true", table_id="table")
+        return jsonify(table.to_dict(orient="records"))
         
