@@ -20,7 +20,9 @@ def character_table():
     id_date = request.get_json()
     courseid = id_date['courseid']
     startdate = id_date['startdate']
-    df_uploaded = pd.read_csv("{0}.csv".format(courseid))
+    #df_uploaded = pd.read_csv("{0}.csv".format(courseid))
+    url = "https://raw.githubusercontent.com/kevinTHlin/Character_Persona/master/app/{0}.csv".format(courseid)
+    df_uploaded = pd.read_csv(url, sep=",")
     class_start_date =  datetime.strptime(startdate , '%Y-%m-%d').date()
     user = df_uploaded['get_user_ID'].unique()
     Table = {}     
