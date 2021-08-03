@@ -88,5 +88,6 @@ def character_table():
     df_Learners_scaled = scaler.fit_transform(df_Learners_scaled)    
     table = pd.DataFrame(df_Learners_scaled, index = df_Learners.index, 
                                         columns = df_Learners.columns)
-    return jsonify(table.to_dict(orient="records"))
+    studentid = id_date['studentid']
+    return jsonify(table.to_dict(orient="index")[studentid])
         
