@@ -20,10 +20,12 @@ def character_table():
     id_date = request.get_json()
     courseid = id_date['courseid']
     startdate = id_date['startdate']
+    enddate = id_date['enddate']
     #df_uploaded = pd.read_csv("{0}.csv".format(courseid))
     url = "https://raw.githubusercontent.com/kevinTHlin/Character_Persona/master/app/{0}.csv".format(courseid)
     df_uploaded = pd.read_csv(url, sep=",")
     class_start_date =  datetime.strptime(startdate , '%Y-%m-%d').date()
+    class_end_date = datetime.strptime(enddate , '%Y-%m-%d').date()
     user = df_uploaded['get_user_ID'].unique()
     Table = {}     
     Learners = {}
@@ -51,13 +53,21 @@ def character_table():
         sum_IQR = sum_Q3 - sum_Q1
         
         before_class = Table[i][(Table[i]['visit_date'] < class_start_date)]['time_sum']
-        after_class = Table[i][(Table[i]['visit_date'] >= class_start_date)]['time_sum']
+        in_semester = Table[i].loc[(Table[i]['visit_date'] >= class_start_date)
+                                   & (Table[i]['visit_date'] <= class_end_date)]['time_sum']
+        after_class = Table[i][(Table[i]['visit_date'] > class_end_date)]['time_sum']
+        
         if before_class.sum(axis=0) > 0:
             meta = 1
-            moti = before_class.median()
+            in_moti_before = before_class.median()
         else: 
             meta = 0
-            moti = 0
+            in_moti_before = 0
+        
+        if after_class.sum(axis=0) > 0:
+            in_moti_after = after_class.median()
+        else:
+            in_moti_after = 0
                     
         half = round(Table[i].shape[0]/2)
         first_half = Table[i].loc[:half, 'time_sum'] 
@@ -67,7 +77,7 @@ def character_table():
         Grit = Table[i]['time_sum'].median() / sum_IQR
         Self_control = Table[i]['time_spent_pv'].median()
         Meta_cog_Self_reg = (meta + (Table[i]['day_difference'].isin(Table[i]['day_difference'].mode()).count()/(Table[i]['day_difference'].nunique()))) / sum_IQR
-        Motivation = moti + after_class.median()
+        Motivation = in_moti_before + in_semester.median() + in_moti_after
         Engagement = Table[i]['time_sum'].median()
         Self_perception = -math.log(1 + abs(first_half.median() - second_half.median()))
                 
